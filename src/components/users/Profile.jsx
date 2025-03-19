@@ -1,11 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/config';
 import AuthContext from '../../context/AuthContext';
 
 const Profile = () => {
   const { user, updateProfile } = useContext(AuthContext);
-  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     name: '',
@@ -46,7 +44,7 @@ const Profile = () => {
     setSuccess(false);
     
     try {
-      const res = await axios.put(`/api/users/${user.id}`, formData);
+      await api.put(`/api/users/${user.id}`, formData);
       setSuccess(true);
       setAlert('Profile updated successfully');
       
@@ -148,4 +146,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;

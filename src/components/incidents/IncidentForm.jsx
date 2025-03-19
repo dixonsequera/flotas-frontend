@@ -1,12 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import AuthContext from '../../context/AuthContext';
+import api from '../../api/config';
 
 const IncidentForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
   const isEdit = !!id;
   
   const [formData, setFormData] = useState({
@@ -21,7 +19,7 @@ const IncidentForm = () => {
   useEffect(() => {
     const fetchIncident = async () => {
       try {
-        const res = await axios.get(`/api/incidents/${id}`);
+        const res = await api.get(`/api/incidents/${id}`);
         const incident = res.data;
         
         setFormData({
@@ -55,11 +53,11 @@ const IncidentForm = () => {
     
     try {
       if (isEdit) {
-        await axios.put(`/api/incidents/${id}`, formData);
+        await api.put(`/api/incidents/${id}`, formData);
         setSuccess(true);
         setAlert('Incident updated successfully');
       } else {
-        await axios.post('/api/incidents', formData);
+        await api.post('/api/incidents', formData);
         setSuccess(true);
         setAlert('Incident reported successfully');
         
@@ -68,7 +66,6 @@ const IncidentForm = () => {
           date: new Date().toISOString().split('T')[0]
         });
       }
-      
       
       setTimeout(() => {
         navigate('/incidents');
@@ -132,4 +129,4 @@ const IncidentForm = () => {
   );
 };
 
-export default IncidentForm; 
+export default IncidentForm;

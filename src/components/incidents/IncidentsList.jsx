@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/config';
 import AuthContext from '../../context/AuthContext';
 
 const IncidentsList = () => {
@@ -13,7 +13,7 @@ const IncidentsList = () => {
     const fetchIncidents = async () => {
       try {
         console.log('Fetching all incidents');
-        const res = await axios.get('/api/incidents');
+        const res = await api.get('/api/incidents');
         console.log('Incidents fetched:', res.data);
         setIncidents(res.data);
         setLoading(false);
@@ -32,7 +32,7 @@ const IncidentsList = () => {
   const deleteIncident = async (id) => {
     if (window.confirm('Are you sure you want to delete this incident?')) {
       try {
-        await axios.delete(`/api/incidents/${id}`);
+        await api.delete(`/api/incidents/${id}`);
         setIncidents(incidents.filter(incident => incident.id !== id));
       } catch (err) {
         console.error('Error deleting incident:', err);

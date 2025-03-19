@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/config';
 import AuthContext from '../../context/AuthContext';
 
 const AdminDashboard = () => {
@@ -14,11 +14,11 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch users
-        const usersRes = await axios.get('/api/users');
+        const usersRes = await api.get('/api/users');
         setUsers(usersRes.data);
         
         // Fetch incidents
-        const incidentsRes = await axios.get('/api/incidents');
+        const incidentsRes = await api.get('/api/incidents');
         setIncidents(incidentsRes.data);
         
         setLoading(false);

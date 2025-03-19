@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/config';
 import AuthContext from '../../context/AuthContext';
 
 const UsersList = () => {
@@ -12,7 +12,7 @@ const UsersList = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get('/api/users');
+        const res = await api.get('/api/users');
         setUsers(res.data);
         setLoading(false);
       } catch (err) {
@@ -33,7 +33,7 @@ const UsersList = () => {
   const toggleAdminRole = async (userId, currentRole) => {
     try {
       const newRole = currentRole === 'ADMIN' ? 'USER' : 'ADMIN';
-      await axios.put(`/api/users/${userId}`, { role: newRole });
+      await api.put(`/api/users/${userId}`, { role: newRole });
       
       // Update the users list
       setUsers(users.map(u => 
@@ -48,7 +48,7 @@ const UsersList = () => {
   const deleteUser = async (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
       try {
-        await axios.delete(`/api/users/${userId}`);
+        await api.delete(`/api/users/${userId}`);
         setUsers(users.filter(u => u.id !== userId));
       } catch (err) {
         console.error('Error deleting user:', err);
@@ -129,4 +129,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList; 
+export default UsersList;

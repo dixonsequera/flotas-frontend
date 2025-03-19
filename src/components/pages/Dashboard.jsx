@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/config';
 import AuthContext from '../../context/AuthContext';
 
 const Dashboard = () => {
@@ -12,7 +12,7 @@ const Dashboard = () => {
     const fetchIncidents = async () => {
       try {
         console.log('Fetching incidents for user:', user?.id);
-        const res = await axios.get('/api/incidents');
+        const res = await api.get('/api/incidents');
         console.log('Incidents fetched:', res.data);
         setIncidents(res.data);
         setLoading(false);
