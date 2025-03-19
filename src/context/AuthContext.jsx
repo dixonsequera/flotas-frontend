@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/config';
 
 const AuthContext = createContext();
 
@@ -13,16 +13,16 @@ export const AuthProvider = ({ children }) => {
   // Set axios default headers
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     } else {
-      delete axios.defaults.headers.common['Authorization'];
+      delete api.defaults.headers.common['Authorization'];
     }
   }, [token]);
 
   // Add axios interceptor for debugging
   useEffect(() => {
     // Request interceptor
-    const requestInterceptor = axios.interceptors.request.use(
+    const requestInterceptor = api.interceptors.request.use(
       config => {
         console.log(`Making ${config.method.toUpperCase()} request to: ${config.url}`);
         return config;
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     );
 
     // Response interceptor
-    const responseInterceptor = axios.interceptors.response.use(
+    const responseInterceptor = api.interceptors.response.use(
       response => {
         console.log(`Response from ${response.config.url}:`, response.status);
         return response;
@@ -51,8 +51,8 @@ export const AuthProvider = ({ children }) => {
 
     // Clean up interceptors
     return () => {
-      axios.interceptors.request.eject(requestInterceptor);
-      axios.interceptors.response.eject(responseInterceptor);
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
     };
   }, []);
 
@@ -62,8 +62,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         try {
           console.log('Loading user with token');
-          // Try to get the user profile using the /me/profile endpoint
-          const res = await axios.get('/api/users/me/profile');
+          const res = await api.get('/api/users/me/profile');
           console.log('User loaded successfully:', res.data);
           setUser(res.data);
           setIsAuthenticated(true);
@@ -86,21 +85,10 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     try {
       console.log('Registering user with data:', formData);
-      
-      // Make sure we're using the correct API endpoint
       const apiUrl = '/api/auth/register';
       console.log('Sending request to:', apiUrl);
       
-      // Set up the request with explicit headers
-      const config = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      };
-      
-      // Send the request
-      const res = await axios.post(apiUrl, formData, config);
-      
+      const res = await api.post(apiUrl, formData);
       console.log('Registration successful:', res.data);
       
       localStorage.setItem('token', res.data.token);
@@ -135,7 +123,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (formData) => {
     try {
       console.log('Logging in with:', formData.email);
-      const res = await axios.post('/api/auth/login', formData);
+      const res = await api.post('/api/auth/login', formData);
       console.log('Login successful:', res.data);
       
       localStorage.setItem('token', res.data.token);
@@ -175,7 +163,7 @@ export const AuthProvider = ({ children }) => {
   // Update user profile
   const updateProfile = async (formData) => {
     try {
-      const res = await axios.put(`/api/users/${user.id}`, formData);
+      const res = await api.put(`/api/users/${user.id}`, formData);
       setUser(res.data.user);
       setError(null);
       return res.data;
